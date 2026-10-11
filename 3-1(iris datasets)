@@ -1,0 +1,28 @@
+# --- [실습 3-1 (a), (b)] 붓꽃 데이터 불러오기 및 확인 ---[cite: 6, 7]
+from sklearn import datasets  # 기계 학습 라이브러리인 sklearn에서 데이터셋 도구 상자를 불러옴
+
+d = datasets.load_iris()      # 내장된 붓꽃(iris) 데이터를 불러와서 변수 d에 통째로 저장
+print(d.DESCR)                # 이 데이터가 어떤 데이터인지 상세 설명서(Description)를 출력
+
+# 샘플을 순서대로 출력 (데이터 개수만큼 반복문 실행)
+for i in range(0, len(d.data)):
+    # 인덱스 번호, 샘플의 4가지 특징값(꽃받침/꽃잎의 길이/너비), 그리고 정답 레이블 출력
+    print(i+1, d.data[i], d.target[i])
+
+
+# --- [실습 3-1 (c)] SVM 모델로 붓꽃 품종 예측하기 ---[cite: 11]
+from sklearn import svm       # 기계 학습 모델 중 하나인 SVM(서포트 벡터 머신) 도구 호출
+
+# 1. 모델 설정
+s = svm.SVC(gamma=0.1, C=10)  # 분류 모델 SVC 생성. (gamma: 영향 범위, C: 오분류 처벌 강도 설정)
+
+# 2. 모델 학습
+s.fit(d.data, d.target)       # 훈련용 문제(d.data)와 정답지(d.target)를 주고 모델을 공부시킴
+
+# 3. 새로운 데이터 준비
+# 우리가 길가다 주운 새로운 붓꽃 2개의 특징이라고 가정 (데이터 형태는 4차원 배열)
+new_d = [[6.4, 3.2, 6.0, 2.5], [7.1, 3.1, 4.7, 1.35]]
+
+# 4. 정답 예측
+res = s.predict(new_d)        # 공부를 마친 모델(s)에게 새로운 붓꽃(new_d)이 무슨 품종인지 물어봄
+print("새로운 2개 샘플의 부류는", res) # 예측 결과 출력
