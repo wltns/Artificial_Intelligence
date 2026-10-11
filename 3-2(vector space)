@@ -1,0 +1,11 @@
+# --- [실습 3-2] 붓꽃 데이터의 3차원 분포도 그리기 ---[cite: 21]
+import plotly.express as px   # 마우스로 움직일 수 있는 대화식 그래프 라이브러리를 px란 이름으로 호출
+
+df = px.data.iris()           # plotly 내부에 저장된 연습용 붓꽃 데이터를 불러와 df에 담음
+
+# 3차원 산점도(scatter_3d) 생성
+# x축: 꽃받침 길이, y축: 꽃받침 너비, z축: 꽃잎 너비 배치
+# color: 점의 색상을 붓꽃의 '품종(species)'별로 다르게 칠하라고 지시
+fig = px.scatter_3d(df, x='sepal_length', y='sepal_width', z='petal_width', color='species')
+
+fig.show()                    # 완성된 3D 그래프를 화면에 출력
