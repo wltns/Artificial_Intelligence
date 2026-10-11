@@ -1,0 +1,42 @@
+# --- [실습 3-5] 데이터를 쪼개서 학습하고 혼동 행렬/정확률 측정 ---[cite: 43]
+from sklearn import datasets
+from sklearn import svm
+from sklearn.model_selection import train_test_split # 데이터를 훈련용과 테스트용으로 쪼개주는 함수
+import numpy as np
+
+np.random.seed(0)              # 난수 발생 패턴 고정 (언제 실행해도 똑같이 데이터가 쪼개지도록 설정)
+digit = datasets.load_digits()
+
+# 전체 데이터를 훈련용(train_size=0.6, 즉 60%)과 테스트용(40%)으로 나눔
+x_train, x_test, y_train, y_test = train_test_split(digit.data, digit.target, train_size=0.6)
+
+s = svm.SVC(gamma=0.001)
+s.fit(x_train, y_train)        # 60%의 훈련 데이터(x_train)로만 모델을 공부시킴
+res = s.predict(x_test)        # 공부에 쓰지 않고 몰래 빼둔 40%의 테스트 데이터(x_test)로 시험을 봄
+
+# 혼동 행렬(Confusion Matrix) 만들기
+conf = np.zeros((10,10))       # 10x10 크기의 0으로 채워진 빈 바둑판(행렬) 생성
+for i in range(len(res)):
+    conf[res[i]][y_test[i]] += 1  # 모델이 예측한 값(행)과 실제 정답(열)의 위치에 카운트 1씩 추가
+print(conf)                    # 어느 숫자를 가장 많이 헷갈렸는지 한눈에 볼 수 있음
+
+# 정확률(Accuracy) 계산
+no_correct = 0
+for i in range(10):
+    no_correct += conf[i][i]   # 행렬의 대각선 값(정답을 제대로 맞춘 개수)을 모두 더함
+
+accuracy = no_correct / len(res) # 맞춘 개수를 전체 시험 문제 수로 나눔
+print("테스트 집합에 대한 정확률은", accuracy*100, "%입니다.")
+
+
+# --- [실습 3-6] 교차 검증(Cross Validation) ---[cite: 45]
+from sklearn.model_selection import cross_val_score # 교차 검증 함수 호출
+
+s = svm.SVC(gamma=0.001)
+
+# cv=5: 데이터를 5덩어리로 나눠서, 1덩어리를 테스트용으로 쓰는 과정을 5번 번갈아가며 반복 수행
+accuracies = cross_val_score(s, digit.data, digit.target, cv=5)
+print(accuracies)              # 5번의 시험을 통해 얻은 5개의 정확률 리스트
+
+# 5번 시험 성적의 평균(mean)과 성적이 얼마나 들쭉날쭉한지(표준편차, std) 출력
+print("정확률(평균) = %0.3f, 표준편차 = %0.3f" % (accuracies.mean()*100, accuracies.std()))
