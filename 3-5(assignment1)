@@ -1,0 +1,36 @@
+from sklearn import datasets 
+from sklearn.model_selection import train_test_split, cross_val_score
+import numpy as np
+
+# 교수님이 요구하신 4가지 모델 불러오기
+from sklearn import svm                  # 1. SVM
+from sklearn.neighbors import KNeighborsClassifier # 2. K-NN
+from sklearn.tree import DecisionTreeClassifier    # 3. 결정 나무
+from sklearn.ensemble import RandomForestClassifier # 4. 랜덤 포레스트
+
+# 난수 고정 (결과가 매번 바뀌지 않도록 교수님 지시사항 적용)
+np.random.seed(0)
+
+# 숫자 데이터 불러오기
+digit = datasets.load_digits()
+
+# 훈련 집합(60%)과 테스트 집합(40%)으로 데이터 분할
+# train_size=0.6 옵션으로 6:4 비율을 맞춥니다.
+x_train, x_test, y_train, y_test = train_test_split(digit.data, digit.target, train_size=0.6)
+
+# 평가할 4가지 모델을 리스트로 준비합니다.
+models = [
+    ("SVM", svm.SVC(gamma=0.001)),
+    ("K-NN", KNeighborsClassifier()),
+    ("Decision Tree", DecisionTreeClassifier(random_state=0)),
+    ("Random Forest", RandomForestClassifier(random_state=0))
+]
+
+# 반복문을 돌면서 각 모델의 교차 검증 성적을 출력합니다.
+print("--- [훈련 데이터 대상 5-겹 교차 검증 결과] ---")
+for name, model in models:
+    # cv=5 옵션이 5-겹 교차 검증을 의미합니다.
+    accuracies = cross_val_score(model, x_train, y_train, cv=5)
+    
+    # 모델 이름과 평균 정확률 출력
+    print(f"{name} 정확률(평균): {accuracies.mean()*100:.2f}%")
