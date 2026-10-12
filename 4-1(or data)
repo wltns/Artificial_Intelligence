@@ -1,0 +1,14 @@
+from sklearn.linear_model import Perceptron
+
+# 훈련 집합 구축 (데이터셋 만들기)
+X = [[0,0],[0,1],[1,0],[1,1]]
+y = [-1,1,1,1]
+
+# fit 함수로 Perceptron 학습
+p = Perceptron() 
+p.fit(X,y)
+
+print("학습된 퍼셉트론의 매개변수: ",p.coef_, p.intercept_) # coef_: 가중치, intercept_: 바이어스 
+print("훈련집합에 대한 예측: ",p.predict(X))
+print("정확률 측정: ",p.score(X,y)*100, "%")
+# score 함수는 X를 퍼셉트론으로 예측한값과 y레이블을 비교해 맞힌 샘플개수를 세어 정확률을 계산
