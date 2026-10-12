@@ -30,3 +30,5 @@ for i in range(10):
     no_correct+=conf[i][i]
 accuracy=no_correct/len(res)
 print("테스트 집합에 대한 정확률은 ",accuracy*100, "%입니다.")
+
+confusion_matrix(y_test, res) / accuracy_score(y_test, res)
