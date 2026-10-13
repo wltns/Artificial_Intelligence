@@ -27,8 +27,7 @@ models = {
     'MLPClassifier': MLPClassifier(random_state=seed)
 }
 
-# 학습 데이터 평가, 제출 파일 생성  
-results = {}
+# 학습 데이터 평가, 제출 파일 생성 
 for name, model in models.items():
     model.fit(X_train, y_train)
     train_acc = accuracy_score(y_train, model.predict(X_train))
