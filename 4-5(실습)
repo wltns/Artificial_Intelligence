@@ -1,0 +1,45 @@
+import random
+import os
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import Perceptron 
+
+seed = 42
+random.seed(seed)
+np.random.seed(seed)
+os.environ["PYTHONHASHSEED"] = str(seed)
+
+train_data=pd.read_csv('/kaggle/input/competitions/2026-2-ai-w-3-p-0-mnist/train.csv')
+test_data=pd.read_csv('/kaggle/input/competitions/2026-2-ai-w-3-p-0-mnist/test.csv')
+
+train_data.head()
+
+# 데이터를 특징(X)과 정답(y)으로 나누고 정규화(전처리) 및 배열 변환하기
+
+X_train = train_data.iloc[:, 1:] / 255.0 # 1이상인 열의 모든 행을 다 가져와라  
+# 숫자가 크면 불안정하여 255로 나눠 특성값 0~1 값 만들기 
+y_train = train_data.iloc[:, 0].astype(int) # 0번째 열을 가지고 와서 int 변환 
+X_test = test_data / 255.0
+
+X_train = np.array(X_train)
+y_train = np.array(y_train)
+X_test = np.array(X_test)
+# 판다스 도구로 데이터를 자르면 여전히 판다스 데이터 프레임(표) 상태여서  
+# np로 순수 숫자로 이뤄지게 바꾼 뒤 model.fit, model.predict해야 오류 덜 생김 
+
+# 선형 분류 모델(Perceptron) 생성 및 학습
+model = Perceptron(max_iter=100, eta0=0.001, random_state=seed)
+model.fit(X_train, y_train)
+
+print("훈련 데이터에 대한 정확률:", model.score(X_train, y_train) * 100, "%")
+
+# 테스트 데이터 예측 수행
+
+pred = model.predict(X_test)
+pred = pred.astype(int)
+
+# 제출용 파일(CSV) 생성
+
+submit = pd.read_csv("/kaggle/input/competitions/2026-2-ai-w-3-p-0-mnist/sample_submit.csv", index_col=0)
+submit['label'] = pred
+submit.to_csv("predict_submit.csv")
