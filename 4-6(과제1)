@@ -1,0 +1,61 @@
+import random
+import os
+import as numpy as np
+import as pandas as pd
+seed = 42
+random.seed(seed)
+np.random.seed(seed)
+os.environ["PYTHONHASHSEED"] = str(seed)
+
+from sklearn.svm import SVC
+from sklearn.linear_model import Perceptron 
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score
+
+train_data=pd.read_csv('')
+test_data=pd.read_csv('')
+sample_sub=pd.read_csv('')
+
+train_x=train_data.drop(columns=['label'])
+train_y=train_data['label']
+test_x=test_data.copy()
+
+# 모델 정의 및 학습  
+models = {
+    'SVC': SVC(random_state=seed),
+    'Perceptron': Perceptron(random_state=seed),
+    'MLPClassifier': MLPClassifier(random_state=seed)
+}
+
+# 학습 데이터 평가, 제출 파일 생성  
+results = {}
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    train_acc = accuracy_score(y_train, model.predict(X_train))
+    results[name] = train_acc
+    print(f"{name} Train Accuracy: {train_acc:.4f}")
+    
+# 학습 데이터 평가, 제출 파일 생성
+
+results = {}  # 1. 모델별 성적을 기록해 둘 빈 수첩을 준비합니다.
+
+for name, model in models.items():  # 2. models에서 이름(name)과 모델(model)을 하나씩 꺼내서 반복문 실행
+    
+    model.fit(X_train, y_train)  # 3. 꺼낸 모델에게 문제지(X_train)와 답안지(y_train)를 주고 학습을 시킴
+    
+    train_acc = accuracy_score(y_train, model.predict(X_train))  # 4. 방금 공부한 모델이 훈련 데이터를 얼마나 잘 맞히는지 정답률을 계산
+    
+    results[name] = train_acc  # 5. 아까 준비한 수첩(results)에 "모델이름: 정확도점수" 형태로 성적을 적어둡니다. (예: results['SVM'] = 0.98)
+    
+    print(f"{name} Train Accuracy: {train_acc:.4f}")  # 6. 화면에 현재 모델의 이름을 포함한 정확도 점수를 출력
+
+# 제출 파일 저장  
+best_model = models['SVC']
+sample_sub['label'] = best_model.predict(X_test)
+sample_sub.to_csv('submission.csv', index=False)
+
+[...] = 순서대로 모아둔 바구니 또는 위치(인덱스)를 콕 집을 때
+
+(...) = 함수를 실행(...())하거나 명령할 때
+
+{...} = 이름표(Key)와 짝꿍인 사전(Dictionary)을 만들거나 f-string 안에서 변수를 품을 때
