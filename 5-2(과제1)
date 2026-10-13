@@ -33,7 +33,7 @@ test_X = torch.FloatTensor(np.array(test_X))
 
 train_dataset = TensorDataset(train_X, train_Y)
 test_dataset = TensorDataset(test_X)
-
+//////////////////////////////////////////////////////////////////////
 train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
 
